@@ -193,10 +193,20 @@ def __(context_filled_prompt, form, llm_module, mo):
     with mo.status.spinner(title="Running prompt..."):
         prompt_response = llm_module.prompt(model, context_filled_prompt)
 
+    # Record the execution
+    execution_filepath = prompt_library_module.record_llm_execution(
+        prompt=context_filled_prompt,
+        list_model_execution_dict=[{
+            "model_id": model.model_id,
+            "output": prompt_response
+        }],
+        prompt_template=selected_prompt_name
+    )
+
     mo.md(f"# Prompt Output\n\n{prompt_response}").style(
         {"background": "#eee", "padding": "10px", "border-radius": "10px"}
     )
-    return model, prompt_response
+    return execution_filepath, model, prompt_response
 
 
 if __name__ == "__main__":
